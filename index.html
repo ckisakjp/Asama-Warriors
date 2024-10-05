@@ -3,34 +3,78 @@
 <head>
     <meta charset="utf-8">
     <title>Connected World</title>
-    <!-- Link to your external CSS file -->
-    <link rel="stylesheet" href="style.css"> <!-- Adjust the path as necessary -->
+    <link rel="stylesheet" href="styles.css"> <!-- Adjust the path as necessary -->
     <style>
         html, body {
             width: 100%;
             height: 100%;
             margin: 0;
         }
+        #map-canvas {
+            width: calc(100% - 300px); /* Reserve space for the info box */
+            height: 100%;
+            position: absolute;
+            right: 0;
+        }
+        .info-box {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 300px;
+            height: auto; /* Auto height for dynamic content */
+            max-height: 80%; /* Limit height to prevent overflow */
+            background-color: #ffffff;
+            border-radius: 8px; /* Rounded corners */
+            padding: 15px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow-y: auto; /* Scroll if content overflows */
+            display: none; /* Hide by default */
+            transition: all 0.3s ease; /* Smooth transition */
+            z-index: 1000; /* Ensure it's on top */
+        }
+
+        .info-box h2 {
+            margin: 0 0 10px; /* Space below heading */
+            font-size: 1.5em; /* Increase font size */
+            color: #333; /* Darker text color */
+        }
+
+        .info-box p {
+            margin: 5px 0; /* Space between paragraphs */
+            font-size: 1em; /* Regular font size */
+            color: #555; /* Lighter text color */
+        }
+
+        .info-box button {
+            background-color: #f5c879; /* Button background */
+            color: white; /* Button text color */
+            border: none; /* Remove border */
+            border-radius: 4px; /* Rounded corners */
+            padding: 10px 15px; /* Padding for button */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s ease; /* Smooth background color change */
+        }
+
+        .info-box button:hover {
+            background-color: #e0b66e; /* Darker shade on hover */
+        }
     </style>
 </head>
 
 <body>
 
+    <!-- Info box to display clicked country details -->
     <div id="info-box" class="info-box">
         <h2 id="country-name"></h2>
         <p id="country-code"></p>
         <button id="close-button">Close</button>
     </div>
-    
 
     <div id="map-canvas"></div>
 
-    <!-- Link to jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <!-- Link to Google Maps JavaScript API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiwuNykdMSzjhCcRmag9wIR4987puqEwM"></script>
-    <!-- Link to your external JavaScript file -->
-    <script src="map.js"></script> <!-- Adjust the path as necessary -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
 
     <script>
         $(document).ready(function() {
@@ -133,6 +177,11 @@
                     infoBox.style.display = 'none'; // Hide the info box
                 }
             }
+
+            // Close button functionality
+            $('#close-button').click(function() {
+                $('#info-box').hide(); // Hide the info box on button click
+            });
         });
     </script>
 
