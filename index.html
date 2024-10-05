@@ -17,13 +17,26 @@
             position: absolute;
             right: 0;
         }
+        /* Info box styles */
+        .info-box {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            padding: 10px;
+            border-right: 1px solid #ccc;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            display: none; /* Hide by default */
+        }
     </style>
 </head>
 
 <body>
 
     <!-- Info box to display clicked country details -->
-    <div id="info-box" style="position: absolute; left: 0; top: 0; width: 300px; height: 100%; background-color: white; padding: 10px; border-right: 1px solid #ccc; box-shadow: 2px 0 5px rgba(0,0,0,0.1); display: none;">
+    <div id="info-box" class="info-box">
         <h2 id="country-name"></h2>
         <p id="country-code"></p>
     </div>
@@ -106,11 +119,8 @@
                         this.setOptions({ fillColor: "#f5c879", fillOpacity: 0 });
                     });
                     google.maps.event.addListener(countries[i], 'click', function(event) {
-                        // Display the country info in the info box
-                        $('#country-name').text(this.title);
-                        $('#country-code').text('ISO Code: ' + this.code);
-                        // Show the info box
-                        $('#info-box').css('display', 'block');
+                        // Call the toggle function to display the info box
+                        toggleInfoBox(this.title, 'ISO Code: ' + this.code);
                     });
                 }
             }
@@ -124,6 +134,22 @@
                     fillOpacity: 0
                 });
                 countries.push(currentCountry);
+            }
+
+            // Function to toggle the visibility of the info box
+            function toggleInfoBox(countryName, countryCode) {
+                const infoBox = document.getElementById('info-box');
+                const countryNameElement = document.getElementById('country-name');
+                const countryCodeElement = document.getElementById('country-code');
+
+                // Update content and toggle display
+                if (infoBox.style.display === 'none' || infoBox.style.display === '') {
+                    countryNameElement.textContent = countryName;
+                    countryCodeElement.textContent = countryCode;
+                    infoBox.style.display = 'block'; // Show the info box
+                } else {
+                    infoBox.style.display = 'none'; // Hide the info box
+                }
             }
         });
     </script>
