@@ -11,8 +11,14 @@
             font-family: 'Arial', sans-serif;
         }
 
-        
-        
+        /* Full width for map container */
+        #map-canvas {
+            position: absolute;
+            top: 0;
+            left: 350px; /* Adjust based on the info box width */
+            right: 0;
+            bottom: 0;
+        }
 
         /* Info box styles */
         #info-box {
@@ -27,6 +33,9 @@
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             display: none;
             transition: all 0.5s ease;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         #info-box h2 {
@@ -44,15 +53,21 @@
             margin-top: 5px;
         }
 
-        /* Add some rounded corners and shadow */
-        #info-box {
-            border-radius: 10px;
-            overflow: hidden;
+        /* Button to close the info box */
+        #close-box {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        /* Subtle shadow effect for a clean look */
-        #info-box {
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+        #close-box:hover {
+            background-color: #c0392b;
         }
 
         /* Add an animation to make it slide in */
@@ -69,23 +84,6 @@
             to {
                 transform: translateX(0);
             }
-        }
-
-        /* Button to close the info box */
-        #close-box {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: #e74c3c;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #close-box:hover {
-            background-color: #c0392b;
         }
 
     </style>
@@ -106,7 +104,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiwuNykdMSzjhCcRmag9wIR4987puqEwM"></script>
     <script>
 
-        $( document ).ready(function() {
+        $(document).ready(function() {
 
             let countries = [];
 
@@ -124,57 +122,47 @@
 
             function init() {
                 $.ajax({
-                    url : 'data.json',
-                    cache : true,
-                    dataType : 'json',
-                    async : true,
+                    url: 'data.json',
+                    cache: true,
+                    dataType: 'json',
+                    async: true,
 
-                    success : function(data) {
+                    success: function(data) {
 
                         if (data) {
-
-                            $.each(data, function(id,country) {
+                            $.each(data, function(id, country) {
 
                                 var countryCoords;
                                 var ca;
                                 var co;
 
                                 if ('multi' in country) {
-
                                     var ccArray = [];
 
                                     for (var t in country['xml']['Polygon']) {
-
                                         countryCoords = [];
-
                                         co = country['xml']['Polygon'][t]['outerBoundaryIs']['LinearRing']['coordinates'].split(' ');
 
                                         for (var i in co) {
-
                                             ca = co[i].split(',');
-
                                             countryCoords.push(new google.maps.LatLng(ca[1], ca[0]));
                                         }
 
                                         ccArray.push(countryCoords);
                                     }
 
-                                    createCountry(ccArray,country);
+                                    createCountry(ccArray, country);
 
                                 } else {
-
                                     countryCoords = [];
-
                                     co = country['xml']['outerBoundaryIs']['LinearRing']['coordinates'].split(' ');
 
                                     for (var j in co) {
-
                                         ca = co[j].split(',');
-
                                         countryCoords.push(new google.maps.LatLng(ca[1], ca[0]));
                                     }
 
-                                    createCountry(countryCoords,country);
+                                    createCountry(countryCoords, country);
                                 }
                             }.bind(this));
 
@@ -185,23 +173,20 @@
             }
 
             function showCountries() {
-                for (var i=0; i<countries.length; i++) {
+                for (var i = 0; i < countries.length; i++) {
                     countries[i].setMap(map);
 
-                    google.maps.event.addListener(countries[i],"mouseover",function(){
+                    google.maps.event.addListener(countries[i], "mouseover", function() {
                         this.setOptions({fillColor: "#f5c879", 'fillOpacity': 0.5});
                     });
 
-                    google.maps.event.addListener(countries[i],"mouseout",function(){
+                    google.maps.event.addListener(countries[i], "mouseout", function() {
                         this.setOptions({fillColor: "#f5c879", 'fillOpacity': 0});
                     });
 
                     google.maps.event.addListener(countries[i], 'click', function(event) {
-                        // Display the country info in the info box
                         $('#country-name').text(this.title);
                         $('#country-code').text('ISO Code: ' + this.code);
-
-                        // Show the info box with slide-in animation
                         $('#info-box').addClass('show');
                     });
                 }
@@ -219,7 +204,6 @@
                 countries.push(currentCountry);
             }
 
-            // Close the info box when the close button is clicked
             $('#close-box').click(function() {
                 $('#info-box').removeClass('show');
             });
