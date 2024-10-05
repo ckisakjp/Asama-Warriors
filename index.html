@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Connected World</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Adjust the path as necessary -->
+    <title>Clickable Google maps JS - JSON Version</title>
     <style>
         html, body {
             width: 100%;
@@ -16,74 +15,31 @@
             position: absolute;
             right: 0;
         }
-        .info-box {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 300px;
-            height: auto; /* Auto height for dynamic content */
-            max-height: 80%; /* Limit height to prevent overflow */
-            background-color: #ffffff;
-            border-radius: 8px; /* Rounded corners */
-            padding: 15px;
-            border: 1px solid #ccc;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow-y: auto; /* Scroll if content overflows */
-            display: none; /* Hide by default */
-            transition: all 0.3s ease; /* Smooth transition */
-            z-index: 1000; /* Ensure it's on top */
-        }
-
-        .info-box h2 {
-            margin: 0 0 10px; /* Space below heading */
-            font-size: 1.5em; /* Increase font size */
-            color: #333; /* Darker text color */
-        }
-
-        .info-box p {
-            margin: 5px 0; /* Space between paragraphs */
-            font-size: 1em; /* Regular font size */
-            color: #555; /* Lighter text color */
-        }
-
-        .info-box button {
-            background-color: #f5c879; /* Button background */
-            color: white; /* Button text color */
-            border: none; /* Remove border */
-            border-radius: 4px; /* Rounded corners */
-            padding: 10px 15px; /* Padding for button */
-            cursor: pointer; /* Pointer cursor on hover */
-            transition: background-color 0.3s ease; /* Smooth background color change */
-        }
-
-        .info-box button:hover {
-            background-color: #e0b66e; /* Darker shade on hover */
-        }
     </style>
 </head>
 
 <body>
 
     <!-- Info box to display clicked country details -->
-    <div id="info-box" class="info-box">
+    <div id="info-box" style="position: absolute; left: 0; top: 0; width: 300px; height: 100%; background-color: white; padding: 10px; border-right: 1px solid #ccc; box-shadow: 2px 0 5px rgba(0,0,0,0.1); display: none;">
         <h2 id="country-name"></h2>
         <p id="country-code"></p>
-        <button id="close-button">Close</button>
     </div>
 
     <div id="map-canvas"></div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiwuNykdMSzjhCcRmag9wIR4987puqEwM"></script>
-
     <script>
-        $(document).ready(function() {
+
+        $( document ).ready(function() {
+
             let countries = [];
 
             let mapOptions = {
                 zoom: 3,
                 minZoom: 1,
-                center: new google.maps.LatLng(50.7244893, 3.2668189),
+                center: new google.maps.LatLng(50.7244893,3.2668189),
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 backgroundColor: 'none'
             };
@@ -94,41 +50,60 @@
 
             function init() {
                 $.ajax({
-                    url: 'data.json',
-                    cache: true,
-                    dataType: 'json',
-                    async: true,
-                    success: function(data) {
+                    url : 'data.json',
+                    cache : true,
+                    dataType : 'json',
+                    async : true,
+
+                    success : function(data) {
+
                         if (data) {
-                            $.each(data, function(id, country) {
+
+                            $.each(data, function(id,country) {
+
                                 var countryCoords;
                                 var ca;
                                 var co;
 
                                 if ('multi' in country) {
+
                                     var ccArray = [];
+
                                     for (var t in country['xml']['Polygon']) {
+
                                         countryCoords = [];
+
                                         co = country['xml']['Polygon'][t]['outerBoundaryIs']['LinearRing']['coordinates'].split(' ');
 
                                         for (var i in co) {
+
                                             ca = co[i].split(',');
+
                                             countryCoords.push(new google.maps.LatLng(ca[1], ca[0]));
                                         }
+
                                         ccArray.push(countryCoords);
                                     }
-                                    createCountry(ccArray, country);
+
+                                    createCountry(ccArray,country);
+
                                 } else {
+
                                     countryCoords = [];
+
                                     co = country['xml']['outerBoundaryIs']['LinearRing']['coordinates'].split(' ');
 
                                     for (var j in co) {
+
                                         ca = co[j].split(',');
+
                                         countryCoords.push(new google.maps.LatLng(ca[1], ca[0]));
                                     }
-                                    createCountry(countryCoords, country);
+
+                                    createCountry(countryCoords,country);
                                 }
                             }.bind(this));
+
                             showCountries();
                         }
                     }.bind(this)
@@ -136,17 +111,24 @@
             }
 
             function showCountries() {
-                for (var i = 0; i < countries.length; i++) {
+                for (var i=0; i<countries.length; i++) {
                     countries[i].setMap(map);
-                    google.maps.event.addListener(countries[i], "mouseover", function() {
-                        this.setOptions({ fillColor: "#f5c879", fillOpacity: 0.5 });
+
+                    google.maps.event.addListener(countries[i],"mouseover",function(){
+                        this.setOptions({fillColor: "#f5c879", 'fillOpacity': 0.5});
                     });
-                    google.maps.event.addListener(countries[i], "mouseout", function() {
-                        this.setOptions({ fillColor: "#f5c879", fillOpacity: 0 });
+
+                    google.maps.event.addListener(countries[i],"mouseout",function(){
+                        this.setOptions({fillColor: "#f5c879", 'fillOpacity': 0});
                     });
+
                     google.maps.event.addListener(countries[i], 'click', function(event) {
-                        // Call the toggle function to display the info box
-                        toggleInfoBox(this.title, 'ISO Code: ' + this.code);
+                        // Display the country info in the info box
+                        $('#country-name').text(this.title);
+                        $('#country-code').text('ISO Code: ' + this.code);
+
+                        // Show the info box
+                        $('#info-box').css('display', 'block');
                     });
                 }
             }
@@ -159,30 +141,12 @@
                     strokeOpacity: 0,
                     fillOpacity: 0
                 });
+
                 countries.push(currentCountry);
             }
 
-            // Function to toggle the visibility of the info box
-            function toggleInfoBox(countryName, countryCode) {
-                const infoBox = document.getElementById('info-box');
-                const countryNameElement = document.getElementById('country-name');
-                const countryCodeElement = document.getElementById('country-code');
-
-                // Update content and toggle display
-                if (infoBox.style.display === 'none' || infoBox.style.display === '') {
-                    countryNameElement.textContent = countryName;
-                    countryCodeElement.textContent = countryCode;
-                    infoBox.style.display = 'block'; // Show the info box
-                } else {
-                    infoBox.style.display = 'none'; // Hide the info box
-                }
-            }
-
-            // Close button functionality
-            $('#close-button').click(function() {
-                $('#info-box').hide(); // Hide the info box on button click
-            });
         });
+
     </script>
 
 </body>
