@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Clickable Google maps JS - JSON Version</title>
+    <title>Connected World</title>
+    <!-- Link to your external CSS file -->
+    <link rel="stylesheet" href="styles.css"> <!-- Adjust the path as necessary -->
     <style>
         html, body {
             width: 100%;
@@ -28,18 +30,21 @@
 
     <div id="map-canvas"></div>
 
+    <!-- Link to jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiwuNykdMSzjhCcRmag9wIR4987puqEwM"></script>
+    <!-- Link to Google Maps JavaScript API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+    <!-- Link to your external JavaScript file -->
+    <script src="script.js"></script> <!-- Adjust the path as necessary -->
+
     <script>
-
-        $( document ).ready(function() {
-
+        $(document).ready(function() {
             let countries = [];
 
             let mapOptions = {
                 zoom: 3,
                 minZoom: 1,
-                center: new google.maps.LatLng(50.7244893,3.2668189),
+                center: new google.maps.LatLng(50.7244893, 3.2668189),
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 backgroundColor: 'none'
             };
@@ -50,60 +55,41 @@
 
             function init() {
                 $.ajax({
-                    url : 'data.json',
-                    cache : true,
-                    dataType : 'json',
-                    async : true,
-
-                    success : function(data) {
-
+                    url: 'data.json',
+                    cache: true,
+                    dataType: 'json',
+                    async: true,
+                    success: function(data) {
                         if (data) {
-
-                            $.each(data, function(id,country) {
-
+                            $.each(data, function(id, country) {
                                 var countryCoords;
                                 var ca;
                                 var co;
 
                                 if ('multi' in country) {
-
                                     var ccArray = [];
-
                                     for (var t in country['xml']['Polygon']) {
-
                                         countryCoords = [];
-
                                         co = country['xml']['Polygon'][t]['outerBoundaryIs']['LinearRing']['coordinates'].split(' ');
 
                                         for (var i in co) {
-
                                             ca = co[i].split(',');
-
                                             countryCoords.push(new google.maps.LatLng(ca[1], ca[0]));
                                         }
-
                                         ccArray.push(countryCoords);
                                     }
-
-                                    createCountry(ccArray,country);
-
+                                    createCountry(ccArray, country);
                                 } else {
-
                                     countryCoords = [];
-
                                     co = country['xml']['outerBoundaryIs']['LinearRing']['coordinates'].split(' ');
 
                                     for (var j in co) {
-
                                         ca = co[j].split(',');
-
                                         countryCoords.push(new google.maps.LatLng(ca[1], ca[0]));
                                     }
-
-                                    createCountry(countryCoords,country);
+                                    createCountry(countryCoords, country);
                                 }
                             }.bind(this));
-
                             showCountries();
                         }
                     }.bind(this)
@@ -111,22 +97,18 @@
             }
 
             function showCountries() {
-                for (var i=0; i<countries.length; i++) {
+                for (var i = 0; i < countries.length; i++) {
                     countries[i].setMap(map);
-
-                    google.maps.event.addListener(countries[i],"mouseover",function(){
-                        this.setOptions({fillColor: "#f5c879", 'fillOpacity': 0.5});
+                    google.maps.event.addListener(countries[i], "mouseover", function() {
+                        this.setOptions({ fillColor: "#f5c879", fillOpacity: 0.5 });
                     });
-
-                    google.maps.event.addListener(countries[i],"mouseout",function(){
-                        this.setOptions({fillColor: "#f5c879", 'fillOpacity': 0});
+                    google.maps.event.addListener(countries[i], "mouseout", function() {
+                        this.setOptions({ fillColor: "#f5c879", fillOpacity: 0 });
                     });
-
                     google.maps.event.addListener(countries[i], 'click', function(event) {
                         // Display the country info in the info box
                         $('#country-name').text(this.title);
                         $('#country-code').text('ISO Code: ' + this.code);
-
                         // Show the info box
                         $('#info-box').css('display', 'block');
                     });
@@ -141,12 +123,9 @@
                     strokeOpacity: 0,
                     fillOpacity: 0
                 });
-
                 countries.push(currentCountry);
             }
-
         });
-
     </script>
 
 </body>
