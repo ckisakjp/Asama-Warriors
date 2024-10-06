@@ -11,8 +11,14 @@
             font-family: 'Arial', sans-serif;
         }
 
-        
-
+        /* Full width for map container */
+        #map-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 450px; /* Adjust based on the info box width */
+            bottom: 0;
+        }
 
         /* Info box styles */
         #info-box {
@@ -118,7 +124,7 @@
         <p id="country-code"></p>
     </div>
 
-    
+    <div id="map-canvas"></div>
 
     <!-- Sidebar with sliders -->
     <div id="sidebar">
