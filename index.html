@@ -15,8 +15,8 @@
         #map-canvas {
             position: absolute;
             top: 0;
-            left: 450px; /* Adjust based on the info box width */
-            right: 0;
+            left: 0;
+            right: 450px; /* Adjust based on the info box width */
             bottom: 0;
         }
 
@@ -30,12 +30,11 @@
             background: linear-gradient(145deg, #f5f7fa, #c3cfe2);
             padding: 20px;
             border-right: 1px solid #ccc;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
             display: none;
             transition: all 0.5s ease;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         #info-box h2 {
@@ -70,6 +69,33 @@
             background-color: #c0392b;
         }
 
+        /* Sidebar styles */
+        #sidebar {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 450px;
+            height: 100%;
+            background: #ffffff;
+            padding: 20px;
+            border-left: 1px solid #ccc;
+            box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+        }
+
+        #sidebar h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .slider {
+            margin: 10px 0;
+        }
+
+        .slider label {
+            margin-right: 10px;
+        }
+
         /* Add an animation to make it slide in */
         #info-box.show {
             display: block;
@@ -99,6 +125,23 @@
     </div>
 
     <div id="map-canvas"></div>
+
+    <!-- Sidebar with sliders -->
+    <div id="sidebar">
+        <h2>Settings</h2>
+        <div class="slider">
+            <label for="slider1">Slider 1:</label>
+            <input type="range" id="slider1" min="0" max="100" value="50">
+        </div>
+        <div class="slider">
+            <label for="slider2">Slider 2:</label>
+            <input type="range" id="slider2" min="0" max="100" value="50">
+        </div>
+        <div class="slider">
+            <label for="slider3">Slider 3:</label>
+            <input type="range" id="slider3" min="0" max="100" value="50">
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiwuNykdMSzjhCcRmag9wIR4987puqEwM"></script>
